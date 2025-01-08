@@ -1,6 +1,4 @@
-It looks like the error occurred because the file `/etc/X11/xkb/symbols/inet` does not exist. To fix this, you can skip the step that copies this file. Here's the updated YAML configuration:
 
-```yaml
 name: Run Katalon Tests
 
 on:
@@ -71,6 +69,3 @@ jobs:
           PROJECT_ID: 1826656
           TYPE: katalon
           REPORT_PATH: Reports
-```
-
-This updated YAML file removes the step that copies the `/etc/X11/xkb/symbols/inet` file, which should resolve the error. If you encounter any other issues or need further assistance, feel free to ask!
