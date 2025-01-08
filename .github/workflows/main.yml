@@ -1,0 +1,72 @@
+
+name: Run Katalon Tests 
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  katalon-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Install Xvfb and Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers at-spi2-core
+          sudo cp /usr/share/X11/xkb/symbols/inet /etc/X11/xkb/symbols/inet
+
+      - name: Download Katalon Runtime Engine
+        run: |
+          curl -O https://download.katalon.com/10.0.1/Katalon_Studio_Engine_Linux_64-10.0.1.tar.gz
+          tar -xzf Katalon_Studio_Engine_Linux_64-10.0.1.tar.gz
+
+      - name: Set Execute Permissions
+        run: chmod +x ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc
+
+      - name: Check Xvfb Process
+        run: ps aux | grep Xvfb
+
+      - name: Run Katalon Test Suite
+        run: |
+          export MESA_LOADER_DRIVER_OVERRIDE=i965
+          export LIBGL_ALWAYS_SOFTWARE=1
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+          ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc -noSplash -runMode=console -projectPath="$(pwd)/test/test.prj" \
+           -retry=0 \
+           -testSuitePath="Test Suites/demo" \
+           -browserType="Chrome (headless)" \
+           -executionProfile="default" \
+           -apiKey="4875209e-6bca-40f0-8b4f-0a867717300c" \
+           --config -proxy.auth.option=NO_PROXY -proxy.system.option=NO_PROXY -proxy.system.applyToDesiredCapabilities=true -webui.autoUpdateDrivers=true
+
+      - name: Debug Environment Variables
+        run: |
+          echo $DISPLAY
+          echo $MESA_LOADER_DRIVER_OVERRIDE
+          echo $LIBGL_ALWAYS_SOFTWARE
+
+      - name: Print Log File
+        run: cat /home/runner/work/Automation-Public/Automation-Public/Katalon_Studio_Engine_Linux_64-10.0.1/configuration/1736320111488.log
+
+      - name: Katalon Report Uploader
+        uses: katalon-studio/report-uploader@v0.0.8
+        env:
+          PASSWORD: 4875209e-6bca-40f0-8b4f-0a867717300c
+          PROJECT_ID: 1826656
+          TYPE: katalon
+          REPORT_PATH: Reports
+
+
