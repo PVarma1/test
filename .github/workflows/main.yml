@@ -43,7 +43,7 @@ jobs:
           export LIBGL_ALWAYS_SOFTWARE=1
           Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
-          ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc -noSplash -runMode=console  -projectPath="$(pwd)/test/test.prj" \
+          ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc -noSplash -runMode=console -projectPath="$(pwd)/test/test.prj" \
            -retry=0 \
            -testSuitePath="Test Suites/Google" \
            -browserType="Chrome (headless)" \
