@@ -1,10 +1,9 @@
-
 name: Run Katalon Tests
 
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 jobs:
@@ -14,8 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          repository: PVarma1/test
 
       - name: Set up Java
         uses: actions/setup-java@v3
@@ -27,6 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers at-spi2-core
+          sudo cp /usr/share/X11/xkb/symbols/inet /etc/X11/xkb/symbols/inet
 
       - name: Download Katalon Runtime Engine
         run: |
@@ -45,9 +43,9 @@ jobs:
           export LIBGL_ALWAYS_SOFTWARE=1
           Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
-          ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc -noSplash -runMode=console -projectPath="$(pwd)/test/test.prj" \
+          ./Katalon_Studio_Engine_Linux_64-10.0.1/katalonc -noSplash -runMode=console  -projectPath="$(pwd)/test/test.prj" \
            -retry=0 \
-           -testSuitePath="Test Suites/demo" \
+           -testSuitePath="Test Suites/Google" \
            -browserType="Chrome (headless)" \
            -executionProfile="default" \
            -apiKey="4875209e-6bca-40f0-8b4f-0a867717300c" \
