@@ -4,7 +4,7 @@ name: Run Katalon Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
